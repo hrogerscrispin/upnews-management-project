@@ -1,0 +1,66 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using MongoDB.Driver;
+using upnews_admin_panel.Core.Application.Services.Auth;
+using upnews_admin_panel.Core.Application.Services.Auth_Services;
+using upnews_admin_panel.Core.Application.Services.MongoDB_Services;
+using upnews_admin_panel.Core.Domain.Interfaces;
+using upnews_admin_panel.Core.Domain.Interfaces.IAuth;
+using upnews_admin_panel.Core.Infrastructure.Data.MongoDB;
+
+var builder = WebApplication.CreateBuilder(args);
+
+
+//configuracion de MongoDB
+builder.Services.Configure<MongoDB_Settings>(
+    builder.Configuration.GetSection("MongoDB_Settings"));
+
+//registrar servicios 
+builder.Services.AddSingleton<IMongoDB_Service, MongoDB_Service>();
+builder.Services.AddSingleton<ILogin_Service, Login_Service>();
+builder.Services.AddSingleton<ICookieAuth_Service, CookieAuth_Service>();
+
+
+
+//cookie based auth configuration
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", options =>
+    {
+        options.Cookie.Name = "CookieAuth";
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/Denied";
+        options.LogoutPath = "/Auth/Logout";
+        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    });
+
+
+builder.Services.AddAuthorization();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Auth}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+
+app.Run();

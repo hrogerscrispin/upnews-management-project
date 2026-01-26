@@ -1,0 +1,18 @@
+﻿<h1>Login Page</h1>
+
+<form asp-controller="Auth" asp-action="Login" method="post">
+	<input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+	<input type="text" name="username" placeholder="example@gmail.com"/>
+	<input type="password" name="password" placeholder="Escribe tu clave" />
+	<button class="btn btn-primary btn-lg">
+		Acceder
+	</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+	foreach(var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+	{
+		<p class="text-danger">@error.ErrorMessage</p>
+	}
+}

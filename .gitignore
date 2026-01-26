@@ -1,0 +1,166 @@
+# ============================================
+# GITIGNORE GLOBAL - Node.js + .NET
+# ============================================
+
+# ==================== IDEs y Editores ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==================== Node.js ====================
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Archivos de dependencias
+.npm
+.yarn-integrity
+
+# ==================== .NET ====================
+# Build results
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Build Results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# ==================== Variables de Entorno ====================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.env
+
+# Archivos de configuración con datos sensibles
+appsettings.json
+appsettings.*.json
+!appsettings.Development.json.example
+config.json
+secrets.json
+
+# ==================== Archivos Subidos por Usuarios ====================
+public/
+public/imagenes/
+public/uploads/
+uploads/
+temp/
+tmp/
+
+# ==================== Librerías de Terceros ====================
+# Frontend libraries (deben instalarse vía npm/bower)
+wwwroot/lib/
+wwwroot/node_modules/
+Content/lib/
+
+# ==================== Logs ====================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==================== Bases de Datos Locales ====================
+*.sqlite
+*.sqlite3
+*.db
+*.mdf
+*.ldf
+
+# ==================== Archivos Temporales ====================
+*.tmp
+*.temp
+*.swp
+*.bak
+*.cache
+*.orig
+
+# ==================== Archivos de Sistema ====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ==================== TypeScript ====================
+*.tsbuildinfo
+
+# ==================== Coverage y Testing ====================
+coverage/
+*.lcov
+.nyc_output
+.coverage
+.coverage.*
+
+# ==================== Documentación Generada ====================
+docs/_build/
+site/
+
+# ==================== Certificados ====================
+*.pfx
+*.p12
+*.key
+*.pem
+*.crt
+*.cer
+
+# ==================== Específicos del Proyecto ====================
+# Soluciones
+*.slnx
+
+# Properties (configuraciones de usuario)
+Properties/
+
+# Archivos de respaldo
+*-backup.*
+*.backup
