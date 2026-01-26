@@ -66,7 +66,6 @@ Arquitectura centralizada basada en `MVC `y `RESTful`.
 | **API REST**            | Node.js                    | 20.x                                  |
 |                         | Express.js                 | 4.18.x                                |
 |                         | MongoDB + Mongoose         | 7.0 / 7.3                             |
-|                         | JWT                        | 9.x                                   |
 |                         | Testing                    | Jest 29 + Supertest 6                  |
 |                         | Documentación              | OpenAPI 3.1 / Swagger UI 4.15          |
 | **SPA Pública**         | React.js + Vite            | 18.x / Vite 5.x                        |
