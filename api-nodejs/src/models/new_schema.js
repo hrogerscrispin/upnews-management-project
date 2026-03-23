@@ -24,4 +24,4 @@ NewSchema.methods.setImgUrl = function setImgUrl(fileName){
    this.portada = `${host}:${port}/public/${fileName}`
 }
 
-export const New = mongoose.model('noticia', NewSchema);
+export const News = mongoose.model('noticia', NewSchema);
