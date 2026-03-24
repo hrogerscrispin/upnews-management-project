@@ -36,7 +36,12 @@ builder.Services.AddAuthentication("CookieAuth")
 builder.Services.AddAuthorization();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationFormats.Add("/Core/Web/Views/{1}/{0}.cshtml");
+        options.ViewLocationFormats.Add("/Core/Web/Views/Shared/{0}.cshtml");
+    });
 
 
 

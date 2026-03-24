@@ -18,7 +18,7 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
         }
         public IActionResult Index()
         {
-            return View();
+            return View("Login");
         }
 
         [HttpPost]
@@ -30,7 +30,7 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
             if (usuario == null)
             {
                 ModelState.AddModelError("", "Credenciales inválidas. Por favor, inténtelo de nuevo.");
-                return View("Index");
+                return View("Login");
             }
 
             //crear claims
