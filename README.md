@@ -62,22 +62,25 @@ Arquitectura centralizada basada en `MVC `y `RESTful`.
 | **Panel Administrativo** | ASP.Net Core MVC           | 7.0                                   |
 |                         | C#                         | 11                                     |
 |                         | Razor Pages / HTML/CSS     | N/A                                   |
-|                         | Autenticación y Roles      | Cookies                               |
+|                         | Autenticación y Roles      | Cookie-based Auth                               |
 | **API REST**            | Node.js                    | 20.x                                  |
 |                         | Express.js                 | 4.18.x                                |
-|                         | MongoDB + Mongoose         | 7.0 / 7.3                             |
 |                         | Testing                    | Jest 29 + Supertest 6                  |
 |                         | Documentación              | OpenAPI 3.1 / Swagger UI 4.15          |
-| **SPA Pública**         | React.js + Vite            | 18.x / Vite 5.x                        |
+| **SPA Pública**         | React.js + Vite            | 18.x / Vite                           |
 |                         | TailwindCSS                | 3.3.x                                 |
 |                         | React Router DOM           | 6.14.x                                 |
-|                         | Consumo de API             | Axios 1.5.x                            |
+|                         | Consumo de API             | Axios                                  |
 |                         | Testing                    | Jest + Cypress 12.x                     |
 | **DevOps / Herramientas** | Git / GitHub             | Última estable                        |
 |                         | CI/CD                      | GitHub Actions                        |
-|                         | Contenedores               | Docker 24.x                            |
+|                         | Contenedores               | Docker, Docker Compose                |
 |                         | IDE                        | VS Code 1.91 / Visual Studio 2022-2026 |
-|                         | Despliegue (opcional)     | Azure                                 |
+|                         | Despliegue (opcional)     | Azure, Kubernetes                       |
+| **Infrastructure / Deploy** | Azure/Hetzner             | Según entorno                        |
+|                         | Traefik                      | Latest Stable (Reverse Proxy)                        |
+| **Datos / Persistencia** | MongoDB                    |7.0 / 7.x |
+|                         | Redis    | 7.x (Caché en memoria)                       |
 
 
 ---
