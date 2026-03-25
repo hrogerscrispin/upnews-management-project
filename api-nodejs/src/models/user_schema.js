@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { isEmail } from "validator";
+import validator from "validator";
 
 const UserSchema= mongoose.Schema({
 
@@ -8,9 +8,9 @@ const UserSchema= mongoose.Schema({
         type: String, 
         unique:true, 
         required:true,
-        validate: [isEmail, 'invalid email']
+        validate: [validator.isEmail, 'invalid email']
     },
-    clave:{type: String, required:true, minLenght:8},
+    clave:{type: String, required:true, minLenght:8}, // hashear clave -- pendiente
     rolId:{type:mongoose.Schema.Types.ObjectId, ref:'rol', required:true},
     activo:{type:Boolean, default:true}
 },
