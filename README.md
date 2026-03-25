@@ -1,6 +1,6 @@
 # UpNews - News Management Application
 
-![.NET Version](https://img.shields.io/badge/.NET-7.0-blue)
+![.NET Version](https://img.shields.io/badge/.NET-10.0-blue)
 ![Node.js Version](https://img.shields.io/badge/Node-20.x-green)
 ![React Version](https://img.shields.io/badge/React-18.x-blue)
 
