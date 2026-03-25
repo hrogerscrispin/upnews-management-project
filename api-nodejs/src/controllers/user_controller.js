@@ -67,7 +67,7 @@ export const createUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const usuarios = await User.find()
-      .select('-clave'); // Excluye el campo de contraseña
+      // .select('-clave'); // Excluye el campo de contraseña
 
     if (!usuarios || usuarios.length === 0) {
       return res.status(404).json({

@@ -3,12 +3,10 @@ using upnews_admin_panel.Core.Domain.Models;
 
 namespace upnews_admin_panel.Core.Domain.Interfaces
 {
-    public class IMongoDB_Service
+    public interface IMongoDB_Service
     {
-        public IMongoCollection<Usuario> Usuarios { get; }
-        public IMongoCollection<Rol> Roles { get; }
-        public IMongoCollection<Permiso> Permisos{ get; }
-
-
+        IMongoCollection<Usuario> Usuarios { get; }
+        IMongoCollection<Rol> Roles { get; }
+        IMongoCollection<Permiso> Permisos { get; }
     }
 }

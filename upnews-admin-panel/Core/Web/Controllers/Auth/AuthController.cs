@@ -7,15 +7,8 @@ using upnews_admin_panel.Core.Domain.Interfaces.IAuth;
 
 namespace upnews_admin_panel.Core.Web.Controllers.Auth
 {
-    public class AuthController : Controller
+    public class AuthController(ICookieAuth_Service cookieAuth_Service, ILogin_Service login_Service) : Controller
     {
-        private readonly ICookieAuth_Service cookieAuth_Service;
-        private readonly ILogin_Service login_Service;
-        public AuthController(ICookieAuth_Service _cookieAuthService,ILogin_Service _login_Service)
-        {
-            this.cookieAuth_Service = _cookieAuthService;
-            this.login_Service = _login_Service;
-        }
         public IActionResult Index()
         {
             return View("Login");
@@ -34,7 +27,7 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
             }
 
             //crear claims
-            var claims = await cookieAuth_Service.CreateUserCookie(usuario);
+            var claims = await cookieAuth_Service.SetCookie(usuario);
 
             //crear cookie de autenticación
             await HttpContext.SignInAsync(
@@ -49,6 +42,13 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
 
             return RedirectToAction("Index", "Home");
 
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index");
         }
     }
 }
