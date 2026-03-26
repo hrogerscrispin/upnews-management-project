@@ -12,28 +12,16 @@ namespace upnews_admin_panel.Core.Application.Services.Auth
     public class CookieAuth_Service : ICookieAuth_Service
     {
         private readonly IMongoCollection<Usuario> _usuariosCollection;
-        
+        private readonly IMongoCollection<Rol> _rolesCollecion;
+        private readonly IMongoCollection<Permiso> _permisosCollection;
         //inyeccion de la dependencia Mongo service como Singleton
         public CookieAuth_Service(IMongoDB_Service mongoDB_Service)
         {
             _usuariosCollection = mongoDB_Service.Usuarios;
+            _rolesCollecion = mongoDB_Service.Roles;
+            _permisosCollection = mongoDB_Service.Permisos;
         }
-
-        public async Task<Usuario> BuscarUsuario(string username, string pass)
-        {
-            try
-            {
-                return await _usuariosCollection
-                    .Find(u => u.Correo == username && u.Clave == pass && u.Activo)
-                    .FirstOrDefaultAsync();
-
-            }catch(Exception ex)
-            {
-                throw new Exception("Error al validar el usuario: "+ex.Message);
-            }
-        }
-
-        public Task<ClaimsPrincipal> SetCookie(Usuario usuario)
+        public async Task<ClaimsPrincipal> SetCookie(Usuario usuario)
         {
             
             var claims = new List<Claim>
@@ -43,10 +31,28 @@ namespace upnews_admin_panel.Core.Application.Services.Auth
                 new Claim(ClaimTypes.Email, usuario.Correo)  
             };
 
+            var rol = await _rolesCollecion
+                    .Find(r=>r.Id== usuario.RolId)
+                    .FirstOrDefaultAsync();
+
+            if (rol != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role,rol.Nombre));
+
+                var permisos = await _permisosCollection
+                        .Find(p=>rol.PermisoIds.Contains(p.Id))
+                        .ToListAsync();
+
+                foreach(var permiso in permisos)
+                {
+                    claims.Add(new Claim("permiso", permiso.Codigo));
+                }
+            }
+
             var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
             var principal = new ClaimsPrincipal(claimsIdentity);
 
-            return Task.FromResult(principal);
+            return principal;
         }
     }
 }
