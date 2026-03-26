@@ -15,9 +15,9 @@ builder.Services.Configure<MongoDB_Settings>(
     builder.Configuration.GetSection("MongoDB_Settings"));
 
 //registrar servicios 
-builder.Services.AddSingleton<IMongoDB_Service, MongoDB_Service>();
-builder.Services.AddSingleton<ILogin_Service, Login_Service>();
-builder.Services.AddSingleton<ICookieAuth_Service, CookieAuth_Service>();
+builder.Services.AddScoped<IMongoDB_Service, MongoDB_Service>();
+builder.Services.AddScoped<ILogin_Service, Login_Service>();
+builder.Services.AddScoped<ICookieAuth_Service, CookieAuth_Service>();
 
 
 
@@ -27,7 +27,7 @@ builder.Services.AddAuthentication("CookieAuth")
     {
         options.Cookie.Name = "CookieAuth";
         options.LoginPath = "/Auth/Login";
-        options.AccessDeniedPath = "/Auth/Denied";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
         options.LogoutPath = "/Auth/Logout";
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
         options.SlidingExpiration = true;

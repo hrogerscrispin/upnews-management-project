@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace upnews_admin_panel.Core.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador, Editor")]
     public class HomeController : Controller
     {
 

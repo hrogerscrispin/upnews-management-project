@@ -13,7 +13,7 @@ namespace upnews_admin_panel.Core.Domain.Models
 
         [BsonElement("permisos")]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-        public List<string> PermisoIds { get; set; }
+        public List<string> PermisoIds { get; set; } = new();
 
         //[BsonIgnore]
         //public List<string> Permiso { get; set; }

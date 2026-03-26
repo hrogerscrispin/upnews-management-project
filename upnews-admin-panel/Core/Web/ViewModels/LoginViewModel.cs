@@ -4,14 +4,16 @@ namespace upnews_admin_panel.Core.Web.ViewModels
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "El Usuario es requerido")]
+        [Required(ErrorMessage = "El correo electrónico es requerido")]
         [EmailAddress]
-        public string? Username { get; set; }
+        public required string Username { get; set; }
 
-        [Required(ErrorMessage = "La Contraseña es requerida")]
+        [Required(ErrorMessage = "La contraseña es requerida")]
         [DataType(DataType.Password)]
-        public string? Password { get; set; }
+        public required string Password { get; set; }
 
         public bool RememberMe { get; set; }
+
+        public string? ReturnUrl { get; set; }
     }
 }

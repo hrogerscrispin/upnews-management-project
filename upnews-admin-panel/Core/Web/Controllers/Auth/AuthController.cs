@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Reflection.Metadata.Ecma335;
 using upnews_admin_panel.Core.Domain.Interfaces.IAuth;
+using upnews_admin_panel.Core.Web.ViewModels;
 
 namespace upnews_admin_panel.Core.Web.Controllers.Auth
 {
@@ -15,12 +16,12 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password, string returnUrl, bool rememberMe)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
 
             //validar usuario
-            var usuario = await login_Service.ValidarUsuario(username, password);
-            if (usuario == null)
+            var usuario = await login_Service.ValidarUsuario(model.Username, model.Password);
+            if (usuario is null)
             {
                 ModelState.AddModelError("", "Credenciales inválidas. Por favor, inténtelo de nuevo.");
                 return View("Login");
@@ -32,8 +33,8 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
             //propiedades de la cookie
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = rememberMe,
-                ExpiresUtc = rememberMe ? DateTimeOffset.UtcNow.AddDays(3) : null
+                IsPersistent = model.RememberMe,
+                ExpiresUtc = model.RememberMe ? DateTimeOffset.UtcNow.AddDays(3) : null
             };
 
             //crear cookie de autenticación
@@ -45,8 +46,8 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
 
 
             //redirigir
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                return Redirect(returnUrl);
+            if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                return Redirect(model.ReturnUrl);
 
             return RedirectToAction("Index", "Home");
 
@@ -60,5 +61,8 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
             );
             return RedirectToAction("Index");
         }
+
+
+        public IActionResult AccessDenied()=>View();
     }
 }

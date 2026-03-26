@@ -10,33 +10,30 @@ namespace upnews_admin_panel.Core.Application.Services.Auth_Services
 {
     public class Login_Service : ILogin_Service
     {
-        private readonly IMongoDB_Service mongoDB_Service;
+        private readonly IMongoCollection<Usuario> usuarioCollection;
         public Login_Service(IMongoDB_Service _mongoDB_Service)
         {
-            this.mongoDB_Service = _mongoDB_Service;
+            usuarioCollection = _mongoDB_Service.Usuarios;
         }
 
-        public async Task<Usuario> ValidarUsuario(string email, string clave)
+        public async Task<Usuario?> ValidarUsuario(string email, string clave)
         {
             try
             {
-                Console.WriteLine($"🔍 Validando usuario: {email}");
-                Console.WriteLine($"🔍 mongoDB_Service null? {mongoDB_Service == null}");
+                var usuario = await usuarioCollection
+                    .Find(u=>u.Correo == email && u.Clave == clave && u.Activo).FirstOrDefaultAsync();
+
+                    if (usuario != null) 
+                        System.Console.WriteLine("Usuario identificado: "+usuario.Correo);
+                    else
+                        System.Console.WriteLine("Usuario no encontrado en el sistema");
+
                 
-                var usuario = await mongoDB_Service.Usuarios
-                    .Find(u => u.Correo == email && u.Clave == clave && u.Activo)
-                    .FirstOrDefaultAsync();
-
-                if (usuario != null)
-                    Console.WriteLine($"✓ Usuario encontrado: {usuario.Correo}");
-                else
-                    Console.WriteLine($"❌ Usuario NO encontrado: {email}");
-
-                return usuario;
+                return usuario; 
             }
             catch(Exception ex) 
             { 
-                Console.WriteLine($"❌ ERROR en ValidarUsuario: {ex}");
+                Console.WriteLine($"ERROR en ValidarUsuario: {ex}");
                 throw new ApplicationException("Error al validar el usuario: " + ex.Message);
             }
         }
