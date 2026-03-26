@@ -30,6 +30,7 @@ builder.Services.AddAuthentication("CookieAuth")
         options.AccessDeniedPath = "/Auth/Denied";
         options.LogoutPath = "/Auth/Logout";
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
+        options.SlidingExpiration = true;
     });
 
 

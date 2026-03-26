@@ -15,7 +15,7 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password, string returnUrl)
+        public async Task<IActionResult> Login(string username, string password, string returnUrl, bool rememberMe)
         {
 
             //validar usuario
@@ -29,10 +29,18 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
             //crear claims
             var claims = await cookieAuth_Service.SetCookie(usuario);
 
+            //propiedades de la cookie
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = rememberMe,
+                ExpiresUtc = rememberMe ? DateTimeOffset.UtcNow.AddDays(3) : null
+            };
+
             //crear cookie de autenticación
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                claims
+                "CookieAuth",
+                claims,
+                authProperties
             );
 
 
@@ -47,7 +55,9 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
         [HttpPost]
         public async Task<ActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(
+                "CookieAuth"
+            );
             return RedirectToAction("Index");
         }
     }

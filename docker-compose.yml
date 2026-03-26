@@ -4,7 +4,7 @@ services:
     container_name: mongo-local
     restart: unless-stopped
     ports:
-      - '27017:27017'
+      - '27018:27017'
     # command: mongod --setParameter authenticationMechanisms=SCRAM-SHA-1
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}

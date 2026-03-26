@@ -1,6 +1,8 @@
-﻿@{
+﻿@using upnews_admin_panel.Core.Web.ViewModels
+@{
     Layout = null;
 }
+@model LoginViewModel
 
 <!DOCTYPE html>
 <html lang="es">
@@ -249,15 +251,15 @@
                     autocomplete="current-password" />
             </div>
 
+
+            <!-- Remember Me -->
             <!-- Remember Me -->
             <div class="form-check">
                 <input 
-                    type="checkbox" 
-                    id="rememberMe" 
-                    name="rememberMe" 
+                    asp-for="RememberMe"
                     class="form-check-input" />
-                <label class="form-check-label" for="rememberMe">
-                    Recuerda mi sesión
+                <label class="form-check-label" asp-for="RememberMe">
+                    Recuérdame
                 </label>
             </div>
 
