@@ -29,14 +29,20 @@ builder.Services.AddAuthentication("CookieAuth")
         options.LoginPath = "/Auth/Login";
         options.AccessDeniedPath = "/Auth/Denied";
         options.LogoutPath = "/Auth/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+        options.SlidingExpiration = true;
     });
 
 
 builder.Services.AddAuthorization();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationFormats.Add("/Core/Web/Views/{1}/{0}.cshtml");
+        options.ViewLocationFormats.Add("/Core/Web/Views/Shared/{0}.cshtml");
+    });
 
 
 

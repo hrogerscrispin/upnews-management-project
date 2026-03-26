@@ -75,14 +75,14 @@
 
   <ItemGroup>
     <Folder Include="Core\Application\DTOs\" />
-    <Folder Include="Core\Domain\ViewModels\" />
+    <Folder Include="Core\Web\NewFolder\" />
     <Folder Include="utils\" />
     <Folder Include="Core\Web\Views\Users\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
-    <PackageReference Include="MongoDB.Driver" Version="3.5.2" />
+    <PackageReference Include="MongoDB.Driver" Version="3.7.1" />
   </ItemGroup>
 
 </Project>

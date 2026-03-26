@@ -20,18 +20,25 @@ namespace upnews_admin_panel.Core.Application.Services.Auth_Services
         {
             try
             {
+                Console.WriteLine($"🔍 Validando usuario: {email}");
+                Console.WriteLine($"🔍 mongoDB_Service null? {mongoDB_Service == null}");
+                
                 var usuario = await mongoDB_Service.Usuarios
-                .Find(u => u.Correo == email && u.Clave == clave && u.Activo)
-                .FirstOrDefaultAsync();
+                    .Find(u => u.Correo == email && u.Clave == clave && u.Activo)
+                    .FirstOrDefaultAsync();
+
+                if (usuario != null)
+                    Console.WriteLine($"✓ Usuario encontrado: {usuario.Correo}");
+                else
+                    Console.WriteLine($"❌ Usuario NO encontrado: {email}");
 
                 return usuario;
-
             }
-            catch(Exception ex) { 
-                
+            catch(Exception ex) 
+            { 
+                Console.WriteLine($"❌ ERROR en ValidarUsuario: {ex}");
                 throw new ApplicationException("Error al validar el usuario: " + ex.Message);
             }
-            
         }
     }
 }

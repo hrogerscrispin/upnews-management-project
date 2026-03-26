@@ -7,22 +7,15 @@ using upnews_admin_panel.Core.Domain.Interfaces.IAuth;
 
 namespace upnews_admin_panel.Core.Web.Controllers.Auth
 {
-    public class AuthController : Controller
+    public class AuthController(ICookieAuth_Service cookieAuth_Service, ILogin_Service login_Service) : Controller
     {
-        private readonly ICookieAuth_Service cookieAuth_Service;
-        private readonly ILogin_Service login_Service;
-        public AuthController(ICookieAuth_Service _cookieAuthService,ILogin_Service _login_Service)
-        {
-            this.cookieAuth_Service = _cookieAuthService;
-            this.login_Service = _login_Service;
-        }
         public IActionResult Index()
         {
-            return View();
+            return View("Login");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password, string returnUrl)
+        public async Task<IActionResult> Login(string username, string password, string returnUrl, bool rememberMe)
         {
 
             //validar usuario
@@ -30,16 +23,24 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
             if (usuario == null)
             {
                 ModelState.AddModelError("", "Credenciales inválidas. Por favor, inténtelo de nuevo.");
-                return View("Index");
+                return View("Login");
             }
 
             //crear claims
-            var claims = await cookieAuth_Service.CreateUserCookie(usuario);
+            var claims = await cookieAuth_Service.SetCookie(usuario);
+
+            //propiedades de la cookie
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = rememberMe,
+                ExpiresUtc = rememberMe ? DateTimeOffset.UtcNow.AddDays(3) : null
+            };
 
             //crear cookie de autenticación
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                claims
+                "CookieAuth",
+                claims,
+                authProperties
             );
 
 
@@ -49,6 +50,15 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
 
             return RedirectToAction("Index", "Home");
 
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(
+                "CookieAuth"
+            );
+            return RedirectToAction("Index");
         }
     }
 }
