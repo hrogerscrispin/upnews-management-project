@@ -26,9 +26,9 @@ namespace upnews_admin_panel.Core.Application.Services.Auth
             
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id),
-                new Claim(ClaimTypes.Name, usuario.Nombre),
-                new Claim(ClaimTypes.Email, usuario.Correo)  
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id ?? ""),
+                new Claim(ClaimTypes.Name, usuario.Nombre ?? ""),
+                new Claim(ClaimTypes.Email, usuario.Correo ?? "")
             };
 
             var rol = await _rolesCollecion
@@ -37,7 +37,7 @@ namespace upnews_admin_panel.Core.Application.Services.Auth
 
             if (rol != null)
             {
-                claims.Add(new Claim(ClaimTypes.Role,rol.Nombre));
+                claims.Add(new Claim(ClaimTypes.Role,rol.Nombre ?? ""));
 
                 var permisos = await _permisosCollection
                         .Find(p=>rol.PermisoIds.Contains(p.Id))
@@ -45,7 +45,7 @@ namespace upnews_admin_panel.Core.Application.Services.Auth
 
                 foreach(var permiso in permisos)
                 {
-                    claims.Add(new Claim("permiso", permiso.Codigo));
+                    claims.Add(new Claim("permiso", permiso.Codigo ?? ""));
                 }
             }
 

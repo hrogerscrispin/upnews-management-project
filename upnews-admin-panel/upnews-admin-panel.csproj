@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>upnews_admin_panel</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -81,8 +83,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
+      <Compile Remove="upnews-admin-panel.Tests\**" />
+      <Content Remove="upnews-admin-panel.Tests\**" />
+      <EmbeddedResource Remove="upnews-admin-panel.Tests\**" />
+      <None Remove="upnews-admin-panel.Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" /> -->
     <PackageReference Include="MongoDB.Driver" Version="3.7.1" />
+    <!-- <PackageReference Include="xunit.abstractions" Version="2.0.3" /> -->
+    <!-- <PackageReference Include="xunit" Version="2.9.3" /> -->
   </ItemGroup>
 
 </Project>

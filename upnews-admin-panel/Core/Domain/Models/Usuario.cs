@@ -9,28 +9,28 @@ namespace upnews_admin_panel.Core.Domain.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         [BsonElement("nombre")]
-        public string Nombre { get; set; }
+        public string? Nombre { get; set; }
 
         [BsonElement("correo")]
-        public string Correo { get; set; }
+        public string? Correo { get; set; }
 
         [BsonElement("clave")]
-        public string Clave { get; set; }
+        public string? Clave { get; set; }
 
         [BsonElement("rolId")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string RolId { get; set; }
+        public string? RolId { get; set; }
 
         [BsonElement("fechaCreacion")]
-        public DateTime FechaCreacion { get; set; }
+        public DateTime? FechaCreacion { get; set; }
 
         [BsonElement("activo")]
-        public bool Activo { get; set; }
+        public bool? Activo { get; set; }
 
         [BsonIgnore]
-        public Rol Rol { get; set; }
+        public Rol? Rol { get; set; }
     }
 }

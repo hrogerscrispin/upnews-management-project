@@ -17,12 +17,12 @@ namespace upnews_admin_panel.Core.Application.Services.MongoDB_Services
             _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
 
             Console.WriteLine($"🔍 DEBUG - _settings: {(_settings == null ? "NULL" : "OK")}");
-            Console.WriteLine($"🔍 DEBUG - Collections: {(_settings.Collections == null ? "NULL" : "OK")}");
-            Console.WriteLine($"🔍 DEBUG - Usuarios value: '{_settings.Collections?.Usuarios ?? "NULL"}'");
-            Console.WriteLine($"🔍 DEBUG - Roles value: '{_settings.Collections?.Roles ?? "NULL"}'");
-            Console.WriteLine($"🔍 DEBUG - Permisos value: '{_settings.Collections?.Permisos ?? "NULL"}'");
+            Console.WriteLine($"🔍 DEBUG - Collections: {(_settings?.Collections == null ? "NULL" : "OK")}");
+            Console.WriteLine($"🔍 DEBUG - Usuarios value: '{_settings?.Collections?.Usuarios ?? "NULL"}'");
+            Console.WriteLine($"🔍 DEBUG - Roles value: '{_settings?.Collections?.Roles ?? "NULL"}'");
+            Console.WriteLine($"🔍 DEBUG - Permisos value: '{_settings?.Collections?.Permisos ?? "NULL"}'");
 
-            if (string.IsNullOrWhiteSpace(_settings.ConnectionString))
+            if (string.IsNullOrWhiteSpace(_settings?.ConnectionString))
             {
                 throw new InvalidOperationException("MongoDB connection string is not configured. Check `MongoDB_Settings:ConnectionString` in appsettings.json or environment variables.");
             }
