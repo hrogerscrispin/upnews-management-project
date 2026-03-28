@@ -7,12 +7,12 @@ namespace upnews_admin_panel.Core.Domain.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         [BsonElement("codigo")]
-        public string Codigo { get; set; }
+        public string? Codigo { get; set; }
 
         [BsonElement("descripcion")]
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
     }
 }

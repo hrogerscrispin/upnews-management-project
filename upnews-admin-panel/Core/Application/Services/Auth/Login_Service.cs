@@ -21,7 +21,7 @@ namespace upnews_admin_panel.Core.Application.Services.Auth_Services
             try
             {
                 var usuario = await usuarioCollection
-                    .Find(u=>u.Correo == email && u.Clave == clave && u.Activo).FirstOrDefaultAsync();
+                    .Find(u=>u.Correo == email && u.Clave == clave && u.Activo == true).FirstOrDefaultAsync();
 
                     if (usuario != null) 
                         System.Console.WriteLine("Usuario identificado: "+usuario.Correo);
