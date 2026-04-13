@@ -16,26 +16,45 @@ namespace upnews_admin_panel.Core.Application.Services.Auth_Services
             usuarioCollection = _mongoDB_Service.Usuarios;
         }
 
-        public async Task<Usuario?> ValidarUsuario(string email, string clave)
+       public async Task<Usuario?> ValidarUsuario(string email, string clave)
+{
+    try
+    {
+        var usuario = await usuarioCollection
+            .Find(u => u.Correo == email && u.Activo == true)
+            .FirstOrDefaultAsync();
+
+        if (usuario == null)
         {
-            try
-            {
-                var usuario = await usuarioCollection
-                    .Find(u=>u.Correo == email && u.Clave == clave && u.Activo == true).FirstOrDefaultAsync();
-
-                    if (usuario != null) 
-                        System.Console.WriteLine("Usuario identificado: "+usuario.Correo);
-                    else
-                        System.Console.WriteLine("Usuario no encontrado en el sistema");
-
-                
-                return usuario; 
-            }
-            catch(Exception ex) 
-            { 
-                Console.WriteLine($"ERROR en ValidarUsuario: {ex}");
-                throw new ApplicationException("Error al validar el usuario: " + ex.Message);
-            }
+            Console.WriteLine("Usuario no encontrado en el sistema");
+            return null;
         }
+
+        // 🔐 Verificar contraseña
+        if (string.IsNullOrEmpty(usuario.Clave))
+        {
+            Console.WriteLine("Contraseña del usuario no configurada");
+            return null;
+        }
+
+        var passwordService = new Password_Service();
+
+        bool esValida = passwordService.VerifyPassword(clave, usuario.Clave);
+
+        if (!esValida)
+        {
+            Console.WriteLine("Contraseña incorrecta");
+            return null;
+        }
+
+        Console.WriteLine("Usuario identificado: " + usuario.Correo);
+        return usuario;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"ERROR en ValidarUsuario: {ex}");
+        throw new ApplicationException("Error al validar el usuario: " + ex.Message);
+    }
+}
     }
 }
