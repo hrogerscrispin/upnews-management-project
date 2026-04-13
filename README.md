@@ -12,7 +12,7 @@ UpNews es una aplicación web completa para la gestión y consulta de noticias. 
 - **SPA Pública:** Interfaz interactiva y responsiva para consultar noticias, filtrarlas, ordenarlas, guardar favoritas y explorar secciones destacadas.
 
 
----
+
 
 
 ## Objetivos
@@ -22,7 +22,7 @@ UpNews es una aplicación web completa para la gestión y consulta de noticias. 
 - Ofrecer SPA pública interactiva y responsiva con filtros y favoritos.
 
 
----
+
 
 
 ## Alcance
@@ -39,7 +39,7 @@ UpNews es una aplicación web completa para la gestión y consulta de noticias. 
 - notificaciones push
 
 
----
+
 
 
 
@@ -51,7 +51,7 @@ UpNews es una aplicación web completa para la gestión y consulta de noticias. 
 Arquitectura centralizada basada en `MVC `y `RESTful`.
 
 
----
+
 
 
 
@@ -83,7 +83,7 @@ Arquitectura centralizada basada en `MVC `y `RESTful`.
 |                         | Redis    | 7.x (Caché en memoria)                       |
 
 
----
+
 
 
 ## Historial de Versiones
