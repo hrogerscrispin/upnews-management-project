@@ -10,7 +10,9 @@ const NewSchema = new mongoose.Schema({
     portada:{type:String},
     autorId:{type:mongoose.Schema.Types.ObjectId, ref: 'usuario', required:true},
     categoriaId:{type:mongoose.Schema.Types.ObjectId, ref: 'categoria', required:true},
-    paisId:{type:mongoose.Schema.Types.ObjectId, ref: 'pais', required:true}
+    paisId:{type:mongoose.Schema.Types.ObjectId, ref: 'pais', required:true},
+    estadoId: {type:mongoose.Schema.Types.ObjectId, ref: 'estadoNoticia', required:true}
+
 
 },{
     collection:'noticia',

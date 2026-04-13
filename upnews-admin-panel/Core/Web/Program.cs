@@ -18,6 +18,8 @@ builder.Services.Configure<MongoDB_Settings>(
 builder.Services.AddScoped<IMongoDB_Service, MongoDB_Service>();
 builder.Services.AddScoped<ILogin_Service, Login_Service>();
 builder.Services.AddScoped<ICookieAuth_Service, CookieAuth_Service>();
+builder.Services.AddScoped<IUsuario_Service, Usuario_Service>();
+builder.Services.AddScoped<IPasswordService, Password_Service>();
 
 
 

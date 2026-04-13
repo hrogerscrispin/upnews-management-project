@@ -1,7 +1,13 @@
-﻿<h1>This is the Home Page</h1>
+﻿@{
+    Layout=null;
+}
+
+<h1>
+    Bienvenido a Upnews Dashboard!
+</h1>
 
 <form asp-controller="Auth" asp-action="Logout" method="post">
-	<button class="btn btn-primary btn-lg">
-		Logout
-	</button>
+    <button class="btn btn-primary btn-lg">
+        Logout
+    </button>
 </form>
