@@ -7,12 +7,14 @@ using upnews_admin_panel.Core.Domain.Models;
 public class Usuario_Service : IUsuario_Service
 {
     private readonly IMongoCollection<Usuario> usuarioCollection;
+    private readonly IMongoCollection<Rol> rolCollection;
     private readonly IPasswordService passwordService;
 
     public Usuario_Service(IMongoDB_Service _mongoService, IPasswordService _passwordService)
     {
         usuarioCollection = _mongoService.Usuarios;
         passwordService = _passwordService;
+        rolCollection = _mongoService.Roles;
     }
 
 
@@ -26,7 +28,43 @@ public class Usuario_Service : IUsuario_Service
                 .FirstOrDefaultAsync();
     }
 
-    // todo: listar todos los usuarios reguistrados, activos e inactivos
+    /// <summary>
+    /// Lista todos los usuarios registrados (activos e inactivos)
+    /// </summary>
+    public async Task<List<Usuario>> ListarTodosLosUsuarios()
+    {
+        try
+        {
+            var usuarios = await usuarioCollection
+                .Find(u => true)
+                .ToListAsync(); 
+
+            var resultado = new List<UsuarioViewModel>();
+
+            foreach(var usuario in usuarios)
+            {
+                usuario.Rol = await rolCollection
+                .Find(r => r.Id == usuario.RolId)
+                .FirstOrDefaultAsync();
+
+                resultado.Add(new UsuarioViewModel
+                {
+                    Nombre = usuario.Nombre ?? string.Empty,
+                    Correo = usuario.Correo ?? string.Empty,
+                    RolId = usuario.RolId ?? string.Empty,
+                    RolNombre = usuario.Rol.Nombre
+                    
+                });
+            }
+            
+            return usuarios;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al listar usuarios: {ex.Message}");
+            throw;
+        }
+    }
 
     /// <summary>
     /// Crea un nuevo usuario con ViewModel, contraseña autogenerada y siempre activo
@@ -70,7 +108,7 @@ public class Usuario_Service : IUsuario_Service
             {
                 Nombre = nuevoUsuario.Nombre,
                 Correo = nuevoUsuario.Correo,
-                RolId = string.IsNullOrEmpty(nuevoUsuario.RolId) ? 0 : int.Parse(nuevoUsuario.RolId)
+                RolId = nuevoUsuario.RolId
                 
             };
 
@@ -136,7 +174,7 @@ public class Usuario_Service : IUsuario_Service
             var respuesta = new UsuarioViewModel{
                 Nombre = resultado.Nombre ?? string.Empty, //**HACK: solucion temporal
                 Correo = resultado.Correo ?? string.Empty, //**HACK: solucion temporal
-                RolId = string.IsNullOrEmpty(resultado.RolId) ? 0 : int.Parse(resultado.RolId)
+                RolId = resultado.RolId ?? string.Empty,
             };
 
 
@@ -144,6 +182,32 @@ public class Usuario_Service : IUsuario_Service
 
         }catch(Exception ex){
             Console.WriteLine($"Error al actualizar los datos del usuario. {ex.Message}");
+            throw;
+        }
+    }
+
+    public async Task<Usuario?> ObtenerUsuarioPorId(string Id)
+    {
+        try
+        {
+            
+            var usuario = await usuarioCollection
+                .Find(x=>x.Id == Id)
+                .FirstOrDefaultAsync();
+
+
+            if(usuario != null)
+            {
+                usuario.Rol = await rolCollection
+                    .Find(x=>x.Id == usuario.RolId)
+                    .FirstOrDefaultAsync();
+            }
+
+            return usuario;
+
+        }catch(Exception ex)
+        {
+            System.Console.WriteLine($"Error al obtener el usuario especificado: {ex.Message}");
             throw;
         }
     }

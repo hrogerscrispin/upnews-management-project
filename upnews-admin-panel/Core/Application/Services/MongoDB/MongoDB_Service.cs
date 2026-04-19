@@ -90,5 +90,16 @@ namespace upnews_admin_panel.Core.Application.Services.MongoDB_Services
                 return _database.GetCollection<Rol>(_settings.Collections.Roles);
             }
         }
+
+        public IMongoCollection<Noticia> Noticias
+        {
+            get
+            {
+                if (_database == null)
+                    throw new InvalidOperationException("_database es NULL en MongoDB_Service");
+                
+                return _database.GetCollection<Noticia>("noticia");
+            }
+        }
     }
 }

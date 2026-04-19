@@ -1,0 +1,144 @@
+@using upnews_admin_panel.Core.Web.ViewModels
+@model DashboardViewModel
+
+<!-- Welcome Section -->
+<div class="dashboard-header-section">
+    <div class="dashboard-title">
+        Bienvenido, @Model.Usuario?.Nombre
+        <span class="dashboard-badge">
+            @(Model.EsAdmin ? "Administrador" : "Editor")
+        </span>
+    </div>
+    <p class="dashboard-subtitle">
+        Última sesión: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+    </p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="cards-grid">
+    <div class="stat-card">
+        <div class="stat-card-label">Total de Noticias</div>
+        <div class="stat-card-value">@Model.Estadisticas?.TotalNoticias</div>
+        <div class="stat-card-subtitle">@Model.Estadisticas?.NoticiasActivas activas</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-label">Noticias Activas</div>
+        <div class="stat-card-value">@Model.Estadisticas?.NoticiasActivas</div>
+        <div class="stat-card-subtitle">Publicadas</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-label">Noticias Inactivas</div>
+        <div class="stat-card-value">@Model.Estadisticas?.NoticiasInactivas</div>
+        <div class="stat-card-subtitle">Ocultas</div>
+    </div>
+
+    @if (Model.EsAdmin && Model.Estadisticas?.TotalUsuarios > 0)
+    {
+        <div class="stat-card">
+            <div class="stat-card-label">Total de Usuarios</div>
+            <div class="stat-card-value">@Model.Estadisticas.TotalUsuarios</div>
+            <div class="stat-card-subtitle">Sistema</div>
+        </div>
+    }
+</div>
+
+<!-- Quick Actions -->
+<div class="dashboard-section">
+    <div class="section-title">Acciones Rápidas</div>
+    <div class="cards-grid">
+        @if (Model.EsAdmin)
+        {
+            <a onclick="cargarContenido('noticias')" class="action-card">
+                <div class="action-card-title">Todas las Noticias</div>
+                <div class="action-card-description">Ver y administrar todas las noticias del sistema</div>
+                <button type="button" class="btn-action">Ir</button>
+            </a>
+
+            <a onclick="cargarContenido('usuarios')" class="action-card">
+                <div class="action-card-title">Usuarios</div>
+                <div class="action-card-description">Crear, editar y administrar usuarios</div>
+                <button type="button" class="btn-action">Ir</button>
+            </a>
+
+            <a onclick="cargarContenido('categorias')" class="action-card">
+                <div class="action-card-title">Categorías</div>
+                <div class="action-card-description">Administrar categorías de noticias</div>
+                <button type="button" class="btn-action">Ir</button>
+            </a>
+
+            <a onclick="cargarContenido('paises')" class="action-card">
+                <div class="action-card-title">Países</div>
+                <div class="action-card-description">Administrar países disponibles</div>
+                <button type="button" class="btn-action">Ir</button>
+            </a>
+        }
+        else
+        {
+            <a onclick="cargarContenido('misnoticias')" class="action-card">
+                <div class="action-card-title">Mis Noticias</div>
+                <div class="action-card-description">Ver y administrar tus noticias</div>
+                <button type="button" class="btn-action">Ir</button>
+            </a>
+
+            <a onclick="cargarContenido('crear')" class="action-card">
+                <div class="action-card-title">Crear Noticia</div>
+                <div class="action-card-description">Publicar una nueva noticia</div>
+                <button type="button" class="btn-action">Crear</button>
+            </a>
+        }
+    </div>
+</div>
+
+<!-- Recent News -->
+@if (Model.NoticiasRecientes?.Count > 0)
+{
+    <div class="dashboard-section">
+        <div class="section-title">Noticias Recientes</div>
+        <div style="background: white; border: 1px solid var(--gray-border); border-radius: 8px; overflow: hidden;">
+            <table class="news-table">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var noticia in Model.NoticiasRecientes)
+                    {
+                        <tr>
+                            <td>@noticia.Titulo</td>
+                            <td>
+                                <span class="status-badge @(noticia.Activa ? "status-active" : "status-inactive")">
+                                    @(noticia.Activa ? "Activa" : "Inactiva")
+                                </span>
+                            </td>
+                            <td>@noticia.FechaPublicacion.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<!-- Activity Log -->
+<div class="dashboard-section">
+    <div class="section-title">Registro de Actividad</div>
+    <div style="background: white; border: 1px solid var(--gray-border); border-radius: 8px; padding: 16px;">
+        <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--gray-border);">
+            <div style="color: var(--primary-blue); font-weight: 700;">12:30</div>
+            <div style="color: var(--text-secondary); font-size: 14px;">Has iniciado sesión en el sistema</div>
+        </div>
+        <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--gray-border);">
+            <div style="color: var(--primary-blue); font-weight: 700;">11:45</div>
+            <div style="color: var(--text-secondary); font-size: 14px;">Última noticia publicada: "Noticias del día"</div>
+        </div>
+        <div style="display: flex; gap: 12px; padding: 8px 0;">
+            <div style="color: var(--primary-blue); font-weight: 700;">09:15</div>
+            <div style="color: var(--text-secondary); font-size: 14px;">Perfil actualizado</div>
+        </div>
+    </div>
+</div>

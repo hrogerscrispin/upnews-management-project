@@ -1,0 +1,237 @@
+@using upnews_admin_panel.Core.Web.ViewModels
+@model UsuarioViewModel
+
+@{
+    bool esEdicion = !string.IsNullOrEmpty(Model?.Id);
+}
+
+<form id="slidePanelForm"
+      asp-controller="Usuario"
+      asp-action="@(esEdicion ? "Editar" : "Crear")"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    @if (esEdicion)
+    {
+        <input type="hidden" name="Id" value="@Model!.Id" />
+    }
+
+   
+    <div class="form-group-upnews">
+        <label for="formNombre" class="form-label-upnews">
+            Nombre completo
+            <span class="required-mark">*</span>
+        </label>
+        <input type="text"
+               id="formNombre"
+               name="Nombre"
+               value="@Model?.Nombre"
+               class="form-input-upnews"
+               placeholder="Ej: María González"
+               required />
+        <span class="field-error" id="errorNombre"></span>
+    </div>
+
+    
+    <div class="form-group-upnews">
+        <label for="formCorreo" class="form-label-upnews">
+            Correo electrónico
+            <span class="required-mark">*</span>
+        </label>
+        <input type="email"
+               id="formCorreo"
+               name="Correo"
+               value="@Model?.Correo"
+               class="form-input-upnews"
+               placeholder="correo@ejemplo.com"
+               required />
+        <span class="field-error" id="errorCorreo"></span>
+    </div>
+
+   
+    @if (!esEdicion)
+    {
+        <div class="form-info-box">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px">
+                <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>La contraseña será generada automáticamente y enviada al correo del usuario.</span>
+        </div>
+    }
+
+    <div class="form-group-upnews">
+        <label for="formRol" class="form-label-upnews">
+            Rol
+            <span class="required-mark">*</span>
+        </label>
+        <div class="select-wrapper">
+            <select id="formRol"
+                    name="RolId"
+                    class="form-input-upnews form-select-upnews"
+                    required>
+                <option value="" disabled selected>Seleccionar rol...</option>
+                @foreach (var rol in Model?.RolesDisponibles ?? new List<upnews_admin_panel.Core.Domain.Models.Rol>())
+                {
+                    @if (Model?.RolId == rol.Id)
+                    {
+                        <option value="@rol.Id" selected>
+                            @rol.Nombre
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="@rol.Id">
+                            @rol.Nombre
+                        </option>
+                    }
+                }
+            </select>
+            <svg class="select-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <span class="field-error" id="errorRol"></span>
+    </div>
+
+    
+    <div class="form-actions">
+        <button type="submit" class="btn-primary-upnews">
+            @(esEdicion ? "Guardar cambios" : "Crear usuario")
+        </button>
+        <button type="button" onclick="cerrarPanel()" class="btn-secondary-upnews">
+            Cancelar
+        </button>
+    </div>
+
+</form>
+
+<style>
+    .form-group-upnews {
+        margin-bottom: 20px;
+    }
+
+    .form-label-upnews {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 6px;
+    }
+
+    .required-mark {
+        color: #d32f2f;
+        margin-left: 2px;
+    }
+
+    .form-input-upnews {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 14px;
+        color: var(--text-primary);
+        background: #ffffff;
+        border: 1px solid var(--gray-border);
+        border-radius: 6px;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-input-upnews:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .form-input-upnews::placeholder {
+        color: #aaa;
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .form-select-upnews {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        padding-right: 36px;
+    }
+
+    .select-chevron {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        pointer-events: none;
+    }
+
+    .form-info-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        background: var(--light-blue);
+        color: var(--primary-blue);
+        border: 1px solid #BFDBFE;
+        border-radius: 6px;
+        padding: 10px 14px;
+        font-size: 13px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .field-error {
+        display: block;
+        font-size: 12px;
+        color: #d32f2f;
+        margin-top: 4px;
+        min-height: 16px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--gray-border);
+    }
+
+    .btn-primary-upnews {
+        flex: 1;
+        padding: 10px 16px;
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        font-family: inherit;
+    }
+
+    .btn-primary-upnews:hover {
+        background-color: var(--dark-blue);
+    }
+
+    .btn-secondary-upnews {
+        flex: 1;
+        padding: 10px 16px;
+        background-color: white;
+        color: var(--text-primary);
+        border: 1px solid var(--gray-border);
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+        font-family: inherit;
+    }
+
+    .btn-secondary-upnews:hover {
+        background-color: var(--gray-light);
+        border-color: #bbb;
+    }
+</style>

@@ -49,7 +49,7 @@ namespace upnews_admin_panel.Core.Web.Controllers.Auth
             if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                 return Redirect(model.ReturnUrl);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Dashboard");
 
         }
 

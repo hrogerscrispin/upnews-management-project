@@ -5,7 +5,10 @@ using upnews_admin_panel.Core.Domain.Models;
 public interface IUsuario_Service
 {
     Task<Usuario?> ObtenerUsuarioLogueado(ClaimsPrincipal claimsUsuario);
+    Task<List<Usuario>> ListarTodosLosUsuarios();
     Task<UsuarioViewModel?> CrearNuevoUsuario(UsuarioViewModel model);
 
     Task<UsuarioViewModel?> EditarUsuario(string Id, UsuarioViewModel model);
+
+    Task<Usuario?> ObtenerUsuarioPorId(string Id);
 }

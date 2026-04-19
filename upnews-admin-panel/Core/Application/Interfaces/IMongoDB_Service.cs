@@ -8,5 +8,6 @@ namespace upnews_admin_panel.Core.Domain.Interfaces
         IMongoCollection<Usuario> Usuarios { get; }
         IMongoCollection<Rol> Roles { get; }
         IMongoCollection<Permiso> Permisos { get; }
+        IMongoCollection<Noticia> Noticias { get; }
     }
 }
