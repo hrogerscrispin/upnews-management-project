@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MongoDB.Driver;
+using upnews_admin_panel.Core.Application.Services;
 using upnews_admin_panel.Core.Application.Services.Auth;
 using upnews_admin_panel.Core.Application.Services.Auth_Services;
 using upnews_admin_panel.Core.Application.Services.MongoDB_Services;
@@ -18,6 +19,11 @@ builder.Services.Configure<MongoDB_Settings>(
 builder.Services.AddScoped<IMongoDB_Service, MongoDB_Service>();
 builder.Services.AddScoped<ILogin_Service, Login_Service>();
 builder.Services.AddScoped<ICookieAuth_Service, CookieAuth_Service>();
+builder.Services.AddScoped<IUsuario_Service, Usuario_Service>();
+builder.Services.AddScoped<IRol_Service, Rol_Service>();
+builder.Services.AddScoped<IPasswordService, Password_Service>();
+builder.Services.AddScoped<IPermisos_Service, Permisos_Service>();
+builder.Services.AddScoped<INoticia_Service, Noticia_Service>();
 
 
 

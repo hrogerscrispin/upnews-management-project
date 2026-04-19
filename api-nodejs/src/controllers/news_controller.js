@@ -1,62 +1,33 @@
 import { News } from "../models/new_schema.js";
 
-// Crear una nueva noticia
-// export const createNews = async (req, res) => {
-//   try {
-//     const { titulo, descripcion, contenido, portada, autorId, categoriaId, paisId } = req.body;
-
-//     if (!titulo || !descripcion || !contenido || !autorId || !categoriaId || !paisId) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Faltan campos requeridos: titulo, descripcion, contenido, autorId, categoriaId, paisId'
-//       });
-//     }
-
-//     const nuevaNoticia = new News({
-//       titulo,
-//       descripcion,
-//       contenido,
-//       portada,
-//       autorId,
-//       categoriaId,
-//       paisId
-//     });
-
-//     await nuevaNoticia.save();
-
-//     const noticia = await News.findById(nuevaNoticia._id)
-//       .populate('autorId', 'nombre correo')
-//       .populate('categoriaId', 'nombreCategoria')
-//       .populate('paisId', 'nombrePais');
-
-//     res.status(201).json({
-//       success: true,
-//       message: 'Noticia creada correctamente',
-//       data: noticia
-//     });
-//   } catch (error) {
-//     console.error('Error al crear noticia:', error);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Error al crear noticia',
-//       error: error.message
-//     });
-//   }
-// };
 
 // Obtener todas las noticias
-export const getAllNews = async (req, res) => {
+export const getAllNews = async (res) => {
   try {
     const noticias = await News.find()
-      .populate('autorId', 'nombre correo')
+      .populate('autorId', 'nombre')
       .populate('categoriaId', 'nombreCategoria')
       .populate('paisId', 'nombrePais')
+      .populate('estadoId','codigo')
       .sort({ fechaPublicacion: -1 });
+
+       const data = noticias.map(n=>({
+        id: n.id,
+        titulo: n.titulo,
+        descripcion: n.descripcion,
+        contenido: n.contenido,
+        portada: n.portada,
+        autor: n.autorId?.nombre,
+        categoria: n.categoriaId?.nombreCategoria,
+        pais: n.paisId?.nombrePais,
+        estado: n.estadoId?.codigo,
+        fechaPublicacion: n.fechaPublicacion
+      }));
 
     res.status(200).json({
       success: true,
       message: 'Noticias obtenidas correctamente',
-      data: noticias
+      data
     });
   } catch (error) {
     console.error('Error al obtener noticias:', error);
@@ -73,9 +44,23 @@ export const getNewsById = async (req, res) => {
   try {
     const { id } = req.params;
     const noticia = await News.findById(id)
-      .populate('autorId', 'nombre correo')
+      .populate('autorId', 'nombre')
       .populate('categoriaId', 'nombreCategoria')
-      .populate('paisId', 'nombrePais');
+      .populate('paisId', 'nombrePais')
+      .populate('estadoId','codigo');
+
+      const data = noticia.map(n=>({
+        id: n.id,
+        titulo: n.titulo,
+        descripcion: n.descripcion,
+        contenido: n.contenido,
+        portada: n.portada,
+        autor: n.autorId?.nombre,
+        categoria: n.categoriaId?.nombreCategoria,
+        pais: n.paisId?.nombrePais,
+        estado: n.estadoId?.codigo,
+        fechaPublicacion: n.fechaPublicacion
+      }));
 
     if (!noticia) {
       return res.status(404).json({
@@ -87,7 +72,7 @@ export const getNewsById = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Noticia obtenida correctamente',
-      data: noticia
+      data
     });
   } catch (error) {
     console.error('Error al obtener noticia:', error);
@@ -107,6 +92,7 @@ export const getNewsByCategory = async (req, res) => {
       .populate('autorId', 'nombre correo')
       .populate('categoriaId', 'nombreCategoria')
       .populate('paisId', 'nombrePais')
+      .populate('estadoId','codigo')
       .sort({ fechaPublicacion: -1 });
 
     res.status(200).json({
@@ -132,6 +118,7 @@ export const getNewsByCountry = async (req, res) => {
       .populate('autorId', 'nombre correo')
       .populate('categoriaId', 'nombreCategoria')
       .populate('paisId', 'nombrePais')
+      .populate('estadoId','codigo')
       .sort({ fechaPublicacion: -1 });
 
     res.status(200).json({
@@ -148,3 +135,6 @@ export const getNewsByCountry = async (req, res) => {
     });
   }
 };
+
+
+// todo: create more filtering functions to get the news

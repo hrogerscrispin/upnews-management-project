@@ -15,27 +15,74 @@ namespace upnews_admin_panel.Core.Application.Services.Auth_Services
         {
             usuarioCollection = _mongoDB_Service.Usuarios;
         }
-
-        public async Task<Usuario?> ValidarUsuario(string email, string clave)
+    public async Task<Usuario?> ValidarUsuario(string email, string clave)
+    {
+        try
         {
+            var usuario = await usuarioCollection
+                .Find(u => u.Correo == email && u.Activo == true)
+                .FirstOrDefaultAsync();
+
+            if (usuario == null)
+            {
+                Console.WriteLine("Usuario no encontrado en el sistema");
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(usuario.Clave))
+            {
+                Console.WriteLine("Contraseña del usuario no configurada");
+                return null;
+            }
+
+            var passwordService = new Password_Service();
+            bool esValida = false;
+
+            // 🔐 1. Intentar verificar como hash
             try
             {
-                var usuario = await usuarioCollection
-                    .Find(u=>u.Correo == email && u.Clave == clave && u.Activo == true).FirstOrDefaultAsync();
-
-                    if (usuario != null) 
-                        System.Console.WriteLine("Usuario identificado: "+usuario.Correo);
-                    else
-                        System.Console.WriteLine("Usuario no encontrado en el sistema");
-
-                
-                return usuario; 
+                esValida = passwordService.VerifyPassword(clave, usuario.Clave);
             }
-            catch(Exception ex) 
-            { 
-                Console.WriteLine($"ERROR en ValidarUsuario: {ex}");
-                throw new ApplicationException("Error al validar el usuario: " + ex.Message);
+            catch
+            {
+                // Si falla, probablemente no es un hash válido
+                esValida = false;
             }
+
+            // ⚠️ 2. Fallback a texto plano (solo temporal)
+            if (!esValida)
+            {
+                if (usuario.Clave == clave)
+                {
+                    Console.WriteLine("Login con contraseña en texto plano (migrando...)");
+
+                    // 🔥 3. Rehashear automáticamente
+                    var nuevoHash = passwordService.HashPassword(clave);
+
+                    var update = Builders<Usuario>.Update.Set(u => u.Clave, nuevoHash);
+                    await usuarioCollection.UpdateOneAsync(
+                        u => u.Id == usuario.Id,
+                        update
+                    );
+
+                    esValida = true;
+                }
+            }
+
+            if (!esValida)
+            {
+                Console.WriteLine("Contraseña incorrecta");
+                return null;
+            }
+
+            Console.WriteLine("Usuario identificado: " + usuario.Correo);
+            return usuario;
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR en ValidarUsuario: {ex}");
+            throw new ApplicationException("Error al validar el usuario: " + ex.Message);
+        }
+    }
     }
 }

@@ -9,7 +9,7 @@ namespace upnews_admin_panel.Core.Domain.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public required string Id { get; set; }
+        public string? Id { get; set; }
 
         [BsonElement("nombre")]
         public string? Nombre { get; set; }

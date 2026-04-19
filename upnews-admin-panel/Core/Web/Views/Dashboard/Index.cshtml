@@ -1,5 +1,4 @@
 @using upnews_admin_panel.Core.Web.ViewModels
-@using upnews_admin_panel.Core.Domain.Constants
 @{
     Layout = null;
 }
@@ -408,12 +407,10 @@
         }
     </style>
 </head>
-
-
 <body>
     <!-- Header -->
     <div class="dashboard-header">
-        <a href="@Url.Action("Index", "Home")" class="header-brand">UpNews - Admin Panel</a>
+        <a href="@Url.Action("Index", "Dashboard")" class="header-brand">UpNews - Admin Panel</a>
         
         <div class="header-user-menu">
             <div class="user-circle" onclick="toggleUserMenu()">
@@ -435,7 +432,7 @@
     <div class="dashboard-layout">
         <!-- Sidebar -->
         <div class="sidebar">
-            @if (User.IsInRole(Roles.Admin))
+            @if (Model.EsAdmin)
             {
                 <div class="sidebar-section-title">Administración</div>
                 <a onclick="cargarContenido('dashboard')" class="sidebar-item active" data-menu="dashboard">Dashboard</a>
@@ -460,9 +457,7 @@
             </div>
         </div>
     </div>
-        
-        @await Html.PartialAsync("_SlidePanel")
-        
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function toggleUserMenu() {
@@ -536,61 +531,6 @@
                 e.preventDefault();
             });
         });
-
-
-        // TODO: Crear un componente o funciones genericas utilizadas para todos los form: Noticia, Usuario, Categorias y Paises
-        // ==================== FUNCIONES DEL MÓDULO DE USUARIOS ====================
-
-        // ==================== SLIDE PANEL GENÉRICO ====================
-
-        async function abrirPanel(url, titulo) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Error al cargar formulario');
-
-                const html = await response.text();
-
-                document.getElementById('slidePanelTitle').textContent = titulo;
-                document.getElementById('slidePanelBody').innerHTML = html;
-
-                document.getElementById('slidePanelOverlay').classList.add('show');
-                document.getElementById('slidePanel').classList.add('show');
-            } catch (error) {
-                console.error('Error al abrir panel:', error);
-                alert('No se pudo cargar el formulario.');
-            }
-        }
-
-        function cerrarPanel() {
-            document.getElementById('slidePanelOverlay').classList.remove('show');
-            document.getElementById('slidePanel').classList.remove('show');
-            document.getElementById('slidePanelBody').innerHTML = '';
-        }
-
-        function toggleMenu(button) {
-            const menu = button.nextElementSibling;
-            document.querySelectorAll('.item-menu-dropdown.show').forEach(m => {
-                if (m !== menu) m.classList.remove('show');
-            });
-            menu.classList.toggle('show');
-            event.stopPropagation();
-        }
-
-        // Cerrar menús contextuales al hacer clic fuera
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('[data-menu-trigger]')) {
-                document.querySelectorAll('.item-menu-dropdown.show').forEach(m => {
-                    m.classList.remove('show');
-                });
-            }
-        });
-
-        // Cerrar panel con ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') cerrarPanel();
-        });
     </script>
-
-    
 </body>
 </html>
