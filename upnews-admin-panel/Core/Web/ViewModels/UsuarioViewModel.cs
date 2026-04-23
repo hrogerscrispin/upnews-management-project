@@ -8,6 +8,8 @@ public class UsuarioViewModel
     
     [Required(ErrorMessage = "El campo 'nombre' es requerido.")]
     public required string  Nombre { get; set; }
+
+    public bool? Activo{get; set;}
     
     [EmailAddress]
     [Required(ErrorMessage = "El campo 'correo' es requerido.")]

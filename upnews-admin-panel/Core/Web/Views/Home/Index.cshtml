@@ -1,4 +1,4 @@
-@using upnews_admin_panel.Core.Web.ViewModels
+﻿@using upnews_admin_panel.Core.Web.ViewModels
 @using upnews_admin_panel.Core.Domain.Constants
 @{
     Layout = null;
@@ -482,20 +482,22 @@
         // ==================== CARGA DINÁMICA DE CONTENIDO ====================
         
         const routes = {
-            dashboard: { url: '@Url.Action("DashboardPartial", "Dashboard")', title: 'Dashboard' },
-            usuarios: { url: '@Url.Action("Listar", "Usuario")', title: 'Gestión de Usuarios' },
+            dashboard: { url: '@Url.Action("DashboardPartial", "Dashboard")', title: 'Dashboard', path:'dashboard' },
+            usuarios: { url: '@Url.Action("Listar", "Usuario")', title: 'Gestión de Usuarios', path:'usuarios'},
             noticias: { url: '@Url.Action("Listar", "Noticia")', title: 'Gestión de Noticias' },
             categorias: { url: '#', title: 'Gestión de Categorías' },
             paises: { url: '#', title: 'Gestión de Países' },
-            misnoticias: { url: '@Url.Action("Listar", "Noticia")', title: 'Mis Noticias' },
-            crear: { url: '@Url.Action("Crear", "Noticia")', title: 'Crear Noticia' }
+            misnoticias: { url: '@Url.Action("Listar", "Noticia")', title: 'Mis Noticias', path:'mis-noticias' },
+            crear: { url: '@Url.Action("Crear", "Noticia")', title: 'Crear Noticia',path:'crear-noticia' }
         };
 
         let currentMenu = 'dashboard';
 
         // Cargar el dashboard al iniciar la página
-        window.addEventListener('DOMContentLoaded', function() {
-            cargarContenido('dashboard');
+        // ✅ detecta la URL y carga el módulo correcto
+       window.addEventListener('DOMContentLoaded', function() {
+            const moduloInicial = '@Model.ModuloInicial';
+            cargarContenido(moduloInicial || 'dashboard');
         });
 
         async function cargarContenido(menuItem) {
@@ -506,7 +508,6 @@
             }
 
             try {
-                // Actualizar clase activa en sidebar
                 document.querySelectorAll('.sidebar-item').forEach(item => {
                     item.classList.remove('active');
                 });
@@ -514,27 +515,66 @@
 
                 currentMenu = menuItem;
 
-                // Cargar como partial para todos los módulos
-                const response = await fetch(route.url);
+                const response = await fetch(route.url,{
+                    headers:{
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
                 if (!response.ok) throw new Error('Error al cargar el contenido');
 
                 const html = await response.text();
                 const container = document.getElementById('dashboard-content-container');
                 container.innerHTML = html;
 
-                // Scroll al top del contenido
+                // 👇 actualiza la URL del browser sin recargar la página
+                history.pushState({ menu: menuItem }, route.title, `/${route.path}`);
+                document.title = `UpNews - ${route.title}`;
+
                 container.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error al cargar el contenido. Por favor, intenta nuevamente.');
             }
         }
-
         // Evitar comportamiento por defecto en los links del sidebar
         document.querySelectorAll('.sidebar-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
             });
+        });
+
+        // ==================== SUBMIT GENÉRICO DEL SLIDE PANEL ====================
+
+        document.addEventListener('submit', async function(e) {
+            const form = e.target.closest('#slidePanelForm');
+            if (!form) return; // si el submit no viene del panel, ignorar
+
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const actionUrl = form.getAttribute('action');
+            const token = form.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': token ?? ''
+                    }
+                });
+
+                if (response.ok) {
+                    cerrarPanel();
+                    await cargarContenido(currentMenu); // recarga el módulo activo
+                } else {
+                    alert('Error al guardar. Intenta nuevamente.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error inesperado: ' + error.message);
+            }
         });
 
 
@@ -574,6 +614,35 @@
             });
             menu.classList.toggle('show');
             event.stopPropagation();
+        }
+
+            
+        async function eliminarUsuario(id, nombre) {
+            if (!confirm(`¿Estás seguro de desactivar a "${nombre}"?`)) return;
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+
+            try {
+                const response = await fetch(`/usuarios/eliminar/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': token,
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `id=${id}`
+                });
+
+                if (response.ok) {
+                    await cargarContenido('usuarios');
+                } else {
+                    const data = await response.json().catch(() => null);
+                    alert(data?.message ?? 'Error al desactivar el usuario.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error inesperado: ' + error.message);
+            }
         }
 
         // Cerrar menús contextuales al hacer clic fuera

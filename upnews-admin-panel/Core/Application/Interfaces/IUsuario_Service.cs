@@ -10,5 +10,7 @@ public interface IUsuario_Service
 
     Task<UsuarioViewModel?> EditarUsuario(string Id, UsuarioViewModel model);
 
+    Task<bool> EliminarUsuario(string Id);
+
     Task<Usuario?> ObtenerUsuarioPorId(string Id);
 }

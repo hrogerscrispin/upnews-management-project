@@ -5,6 +5,7 @@ namespace upnews_admin_panel.Core.Web.ViewModels
     public class DashboardViewModel
     {
         public Usuario? Usuario { get; set; }
+        public string ModuloInicial{ get; set; } = "dashboard";
         public bool EsAdmin { get; set; }
         public bool EsEditor { get; set; }
         public EstadisticasViewModel? Estadisticas { get; set; }

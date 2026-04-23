@@ -7,7 +7,8 @@
 
 <form id="slidePanelForm"
       asp-controller="Usuario"
-      asp-action="@(esEdicion ? "Editar" : "Crear")"
+      asp-action="@(esEdicion ? "EditarUsuario" : "CrearUsuario")"
+      asp-route-id="@Model?.Id"
       method="post">
 
     @Html.AntiForgeryToken()
@@ -93,6 +94,25 @@
             </svg>
         </div>
         <span class="field-error" id="errorRol"></span>
+
+        @if (esEdicion && Model?.Activo == false)
+        {
+            <div class="form-group-upnews">
+                <label class="form-label-upnews">Estado</label>
+                <div class="estado-toggle-wrapper">
+                    <label class="estado-toggle">
+                        <input type="checkbox"
+                            name="Activo"
+                            value="true"
+                            @(Model?.Activo == true ? "checked" : "") />
+                        <span class="estado-slider"></span>
+                    </label>
+                    <span class="estado-label">
+                        @(Model?.Activo == true ? "Activo" : "Inactivo")
+                    </span>
+                </div>
+            </div>
+        }
     </div>
 
     
@@ -106,6 +126,7 @@
     </div>
 
 </form>
+
 
 <style>
     .form-group-upnews {
@@ -234,4 +255,58 @@
         background-color: var(--gray-light);
         border-color: #bbb;
     }
+
+    .estado-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.estado-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    margin: 0;
+}
+
+.estado-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.estado-slider {
+    position: absolute;
+    inset: 0;
+    background-color: #e0e0e0;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.estado-slider:before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.estado-toggle input:checked + .estado-slider {
+    background-color: #2e7d32;
+}
+
+.estado-toggle input:checked + .estado-slider:before {
+    transform: translateX(20px);
+}
+
+.estado-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
 </style>

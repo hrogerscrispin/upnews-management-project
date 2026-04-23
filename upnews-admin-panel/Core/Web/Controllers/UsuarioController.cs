@@ -3,9 +3,11 @@ using upnews_admin_panel.Core.Domain.Models;
 using upnews_admin_panel.Core.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using upnews_admin_panel.Core.Domain.Constants;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 
 [Authorize(Roles = Roles.Admin)]
+[Route("/usuarios")]
 public class UsuarioController : Controller
 {
     private readonly IUsuario_Service usuarioService;
@@ -21,7 +23,7 @@ public class UsuarioController : Controller
     }
 
 
-    [HttpGet]
+    [HttpGet("")]
     public async Task<IActionResult> Listar()
     {
         try
@@ -40,7 +42,7 @@ public class UsuarioController : Controller
             
             // Si es una solicitud normal, retornar la partial view de igual forma
             // ya que se cargará dinámicamente desde el dashboard
-            return PartialView("_ListarPartial", usuarios);
+            return RedirectToAction("Index","Home",new {modulo = "usuarios"});
         }
         catch (Exception ex)
         {
@@ -50,7 +52,7 @@ public class UsuarioController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpGet("crear")]
     public async Task<IActionResult> FormCrear()
     {
         try
@@ -74,7 +76,7 @@ public class UsuarioController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpGet("editar/{Id}")]
 
     public async Task<IActionResult> FormEditar(string Id)
     {
@@ -90,6 +92,7 @@ public class UsuarioController : Controller
                 Id = usuario.Id,
                 Nombre = usuario.Nombre ?? string.Empty,
                 Correo = usuario.Correo ?? string.Empty,
+                Activo = usuario.Activo,
                 RolId = usuario.RolId ?? string.Empty,
                 RolesDisponibles = roles
             };
@@ -99,6 +102,78 @@ public class UsuarioController : Controller
         catch (Exception ex)
         {
             return PartialView("", ex);
+        }
+    }
+
+
+    [HttpPost("crear")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CrearUsuario(UsuarioViewModel model)
+    {
+        try
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await usuarioService.CrearNuevoUsuario(model);
+
+            var usuarios = await usuarioService.ListarTodosLosUsuarios();
+            var roles = await rolService.ListarTodosLosRoles();
+            ViewData["Roles"] = roles;
+
+            //return PartialView("_ListarPartial", usuarios);
+            //return await Listar();
+            return Ok();
+        }
+        catch(Exception ex)
+        {
+            System.Console.WriteLine($"Ha ocurrido un error al crear el usuario: {ex.Message}");
+            ViewData["Roles"] = new List<Rol>();
+            return PartialView("_ListarPartial", new List<Usuario>());
+            
+        }
+    }
+    
+
+    [HttpPost("editar/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditarUsuario(string id, UsuarioViewModel model)
+    {
+        try
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await usuarioService.EditarUsuario(id,model);
+            return Ok();
+
+
+        }catch(Exception ex)
+        {
+            System.Console.WriteLine($"Ha ocurrido un error al editar la info del usuario: {ex.Message}");
+            ViewData["Roles"] = new List<Rol>();
+            return PartialView("_ListarPartial", new List<Usuario>());
+        }
+    }
+
+
+    [HttpPost("eliminar/{Id}")]
+    public async Task<IActionResult> EliminarUsuario(string Id)
+    {
+        try
+        {
+            if(string.IsNullOrEmpty(Id))
+                return BadRequest(new{message="ID Requerido"});
+
+            await usuarioService.EliminarUsuario(Id);
+            return Ok(); 
+
+
+        }catch(Exception ex)
+        {
+            System.Console.WriteLine($"Ha ocurrido un error al eliminar el usuario: {ex.Message}");
+            ViewData["Roles"] = new List<Rol>();
+            return PartialView("_ListarPartial", new List<Usuario>());
         }
     }
 

@@ -150,6 +150,7 @@ public class Usuario_Service : IUsuario_Service
             var usuarioActualizado = Builders<Usuario>.Update
                 .Set(x=>x.Nombre, model.Nombre)
                 .Set(x=>x.Correo, model.Correo)
+                .Set(x=>x.Activo, model.Activo ?? usuarioExistente.Activo)
                 .Set(x=>x.RolId, model.RolId.ToString());;
 
             if(!string.IsNullOrEmpty(model.Contrasena)){
@@ -209,6 +210,32 @@ public class Usuario_Service : IUsuario_Service
         {
             System.Console.WriteLine($"Error al obtener el usuario especificado: {ex.Message}");
             throw;
+        }
+    }
+
+    public async Task<bool> EliminarUsuario(string Id)
+    {
+        try
+        {
+
+            var usuario = await usuarioCollection
+                    .Find(x=>x.Id == Id)
+                    .FirstOrDefaultAsync();
+
+            if(usuario is null)
+                throw new InvalidOperationException("No se ha encontrado el usuario a eliminar.");
+
+            var update = Builders<Usuario>.Update.Set(x=>x.Activo, false);
+
+            await usuarioCollection.UpdateOneAsync(x=>x.Id == Id, update);
+
+            return true;
+
+            
+        }catch(Exception ex)
+        {
+            System.Console.WriteLine($"Error al eliminar el usuario especificado: {ex.Message}");
+            throw; 
         }
     }
 }
